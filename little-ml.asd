@@ -5,10 +5,11 @@
   :description "Toy implementation of machine learning routines, following Andrew Ng's coursera course."
   :author "Alexandr Popolitov <popolit@gmail.com>"
   :license "GPL"
-  :depends-on (#:iterate)
+  :depends-on (#:iterate #:cl-gtk2-gtk)
   :components ((:file "package")
                (:file "little-ml")
-	       (:file "1dlinear-regression")))
+	       (:file "1dlinear-regression")
+	       (:file "demos")))
 
 (defsystem :little-ml-tests
   :description "Tests for LITTLE-ML."
