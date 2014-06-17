@@ -8,8 +8,19 @@
   :depends-on (#:iterate #:cl-gtk2-gtk)
   :components ((:file "package")
                (:file "little-ml")
-	       (:file "1dlinear-regression")
-	       (:file "demos")))
+	       (:file "1dlinear-regression")))
+
+(asdf:defsystem #:little-ml-demos
+  :serial t
+  :description "Demos, illustating work of ML algorithms in LITTLE-ML"
+  :author "Alexandr Popolitov <popolit@gmail.com>"
+  :license "GPL"
+  :depends-on (#:little-ml
+	       #:cells-gtk
+	       #+cells-gtk-opengl #:cl-opengl
+	       #+cells-gtk-opengl #:cl-glu
+	       #+cells-gtk-opengl #:cl-glut)
+  :components ((:file "demos")))
 
 (defsystem :little-ml-tests
   :description "Tests for LITTLE-ML."
