@@ -20,7 +20,8 @@
 	       #+cells-gtk-opengl #:cl-opengl
 	       #+cells-gtk-opengl #:cl-glu
 	       #+cells-gtk-opengl #:cl-glut)
-  :components ((:file "demos")))
+  :components ((:file "demos")
+	       (:file "basic-gui"))
 
 (defsystem :little-ml-tests
   :description "Tests for LITTLE-ML."
