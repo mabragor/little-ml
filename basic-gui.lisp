@@ -35,7 +35,7 @@
 (defun handle-move-object (pane figure first-point-x first-point-y)
   (tracking-pointer (pane)
     (:pointer-button-release (&key event x y)
-      (when (= (pointer-event-button event) +pointer-right-button+)
+      (when (= (pointer-event-button event) +pointer-left-button+)
         (multiple-value-bind (old-x old-y)
             (output-record-position figure)
           (setf (output-record-position figure)
@@ -46,8 +46,6 @@
 
 (defun little-ml-gui ()
   (run-frame-top-level (make-application-frame 'little-ml-gui)))
-
-
 
 
 (define-application-frame little-ml-gui ()
@@ -87,6 +85,12 @@
   (handle-move-object (find-pane-named *application-frame* 'canvas)
                       figure x y))
 
+(define-little-ml-gui-command (com-del-figure :name nil)
+    ((figure 'figure))
+  (erase-output-record figure *standard-output*))
+
+
+
 (define-presentation-to-command-translator add-figure
     (blank-area com-add-figure little-ml-gui
                 :gesture :select ; XXX
@@ -97,8 +101,16 @@
 
 (define-presentation-to-command-translator move-figure
     (figure com-move-figure little-ml-gui
-            :gesture :menu ; XXX
+            :gesture :select ; XXX
             :echo nil)
   (presentation x y)
   (list presentation x y))
+
+(define-presentation-to-command-translator del-figure
+    (figure com-del-figure little-ml-gui
+            :gesture :menu ; XXX
+            :echo nil)
+  (presentation)
+  (list presentation))
+
 
