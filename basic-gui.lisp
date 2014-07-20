@@ -8,7 +8,7 @@
 
 (defpackage #:little-ml-demo
   (:use :clim :clim-lisp)
-  (:export #:app-main #:app1-main #:app2-main))
+  (:export #:app-main #:app1-main #:app2-main #:little-ml-gui))
 
 (in-package :little-ml-demo)
 
@@ -17,7 +17,7 @@
    (first-point-y :initform nil)))
 
 (defun draw-figure (pane x y)
-  (draw-point* pane x y :ink +black+ :line-style (make-line-style :thickness 10)))
+  (draw-ellipse* pane x y 20 0 0 20 :ink +black+ :line-style (make-line-style :thickness 10)))
 
 (define-presentation-type figure ())
 

@@ -16,12 +16,13 @@
   :author "Alexandr Popolitov <popolit@gmail.com>"
   :license "GPL"
   :depends-on (#:little-ml
-	       #:cells-gtk
-	       #+cells-gtk-opengl #:cl-opengl
-	       #+cells-gtk-opengl #:cl-glu
-	       #+cells-gtk-opengl #:cl-glut)
-  :components ((:file "demos")
-	       (:file "basic-gui"))
+	       ;; #:cells-gtk
+	       ;; #+cells-gtk-opengl #:cl-opengl
+	       ;; #+cells-gtk-opengl #:cl-glu
+	       ;; #+cells-gtk-opengl #:cl-glut)
+	       #:mcclim)
+  :components (;; (:file "demos")
+	       (:file "basic-gui")))
 
 (defsystem :little-ml-tests
   :description "Tests for LITTLE-ML."
