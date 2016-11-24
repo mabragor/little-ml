@@ -21,10 +21,31 @@
 
 (define-presentation-type figure ())
 
+;; (define-presentation-method highlight-presentation
+;;     ((type figure) record stream state)
+;;   (declare (ignore record stream state))
+;;   nil)
+
+(define-presentation-method highlight-presentation ((type figure) record stream state)
+  state
+  (multiple-value-bind (xoff yoff)
+      (#+mcclim climi::convert-from-relative-to-absolute-coordinates ;; Legacy CLIM 1.0 function..
+       #-mcclim clim:convert-from-relative-to-absolute-coordinates
+	stream (output-record-parent record))
+    (with-bounding-rectangle* (left top right bottom) record
+      (draw-rectangle* stream
+		       (+ left xoff) (+ top yoff)
+		       (+ right xoff) (+ bottom yoff)
+		       :ink +flipping-ink+))))
+
+
+(define-presentation-type background-line ())
+
 (define-presentation-method highlight-presentation
-    ((type figure) record stream state)
+    ((type background-line) record stream state)
   (declare (ignore record stream state))
   nil)
+
 
 (defun handle-draw-object (pane x1 y1)
   (with-output-as-presentation (pane nil 'figure
@@ -45,22 +66,38 @@
         (return-from handle-move-object)))))
 
 (defun little-ml-gui ()
-  (run-frame-top-level (make-application-frame 'little-ml-gui)))
+  (let ((app-frame (make-application-frame 'little-ml-gui)))
+    (run-frame-top-level app-frame)))
+
+  
+
 
 
 (define-application-frame little-ml-gui ()
   ((output-record :accessor little-ml-gui-output-record)
-   (redo-list :initform nil :accessor little-ml-gui-redo-list))
+   (redo-list :initform nil :accessor little-ml-gui-redo-list)
+   (line-drawn :initform nil))
   (:panes
    (canvas (make-pane 'canvas-pane
 		      :name 'canvas
+		      :incremental-redisplay t
                       :display-time nil)))
   (:layouts
    (default
        (vertically ()
 	 (horizontally ()
 	   (scrolling (:width 600 :height 400) canvas)))))
-  (:top-level (default-frame-top-level :prompt 'clim-fig-prompt)))
+  (:top-level (little-ml-gui-frame-top-level . nil)))
+
+; :prompt 'clim-fig-prompt)))
+
+(defmethod little-ml-gui-frame-top-level ((frame application-frame))
+  ;; (draw-line* (find-pane-named frame 'canvas) 0 0 1000 1000
+  ;; 	      :ink +red+
+  ;; 	      :line-style (make-line-style :thickness 10))
+  (setf (slot-value frame 'line-drawn) nil)
+  (default-frame-top-level frame))
+
 
 (defmethod frame-standard-output ((frame little-ml-gui))
   (find-pane-named frame 'canvas))
@@ -78,6 +115,11 @@
   (frame-exit *application-frame*))
 
 (define-little-ml-gui-command (com-add-figure :name nil) ((x 'real) (y 'real))
+  (when (not (slot-value *application-frame* 'line-drawn))
+    (setf (slot-value *application-frame* 'line-drawn) t)
+    (draw-line* (find-pane-named *application-frame* 'canvas) 0 0 100 100
+		:ink +red+
+		:line-style (make-line-style :thickness 10)))
   (handle-draw-object (find-pane-named *application-frame* 'canvas) x y))
 
 (define-little-ml-gui-command (com-move-figure :name nil)
